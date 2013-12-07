@@ -51,7 +51,11 @@ if (Meteor.isClient) {
         SQLCmds.insert( { query: q, user: username, time: Date.now() } );
         console.log("res:",res);
       }
-      res = Meteor.call('DBExec', q);
+      res = Meteor.call('DBExec', q, function(err,res) { 
+        window.lastres = res;
+        console.log("lastres:",res)}
+      );
+//      console.log("Client:",res);
     }
   };
 
@@ -101,20 +105,25 @@ if (Meteor.isServer) {
 Meteor.methods({
   DBExec: function (query) {
     console.log("DBExec: ", query);
+    var Fiber      = Npm.require('fibers');
     var mysql      = Npm.require('mysql');
     var connection = mysql.createConnection({
       host     : 'localhost',
       user     : 'root',
       password : '',
       database : 'wc'
-    });  
-    var res = connection.query(query, 
-      function(err, tables) {
-        if (err) throw err;
-        console.log(JSON.stringify(tables,null,4));
+    });
+    var fiber = Fiber.current;
+
+    connection.query(query, function(err, tables) {
+        if (err) return fiber.throwInto(err);
+//      console.log(JSON.stringify(tables,null,4));
         connection.end();
+        fiber.run(tables);
       }
     );
+    var res = Fiber.yield();
+//    console.log("This is res:",res);
     return res;
   }
 })

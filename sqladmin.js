@@ -33,7 +33,7 @@ if (Meteor.isClient) {
   };
 
   var SetActiveQuery = function(query, num) {
-//    console.log("query:", query, "num:", num);
+    //console.log("SetActiveQuery:", query, "num:", num);
     if (!window.editor) {
         console.log("FIXME!!! Wait for the window.editor window to appear.");
         console.log("It fired before window was created!!!!");
@@ -45,8 +45,18 @@ if (Meteor.isClient) {
 
     if (num === undefined) {
       window.editor.setValue(query);
+      Session.set("histpos", 0);
     } else {
-      lastq = SQLCmds.findOne({ user: username }, {sort: { time: -1 }, skip: num, });
+      if (num==="up") {
+        num = Session.get("histpos") + 1;
+        Session.set("histpos", num);
+      } else if (num==="down") {
+        num = Session.get("histpos") - 1;
+        if (num<0) num = 0;
+        Session.set("histpos", num);
+      }
+      //console.log("SetActiveQuery:", query, "num:", num);
+      lastq = SQLCmds.findOne({ user: username }, {sort: { time: -1 }, skip: num });
 //      console.log("lastq:",lastq);
       if (lastq) {
           window.editor.setValue(lastq.query);
@@ -63,6 +73,7 @@ if (Meteor.isClient) {
       console.log("Last Cmd:",lastq);
       if (lastq.query.trim() !== q.trim()) {
         SQLCmds.insert( { query: q, user: username, time: Date.now() } );
+        Session.set("histpos", 0);
       }
       return true;
     }
@@ -104,14 +115,13 @@ if (Meteor.isClient) {
                 //console.log('click:',event, "this:", this); 
                 if (this) SetActiveQuery(this.query);
               } ,
-    'keypress': function (event) { 
-                    if (event.keyIdentifier == "Enter" && event.shiftKey==true) { SubmitActiveQuery(); return false; } 
-                //    if (event.keyIdentifier == "Enter" && event.shiftKey==true) { SubmitActiveQuery(); return false; } 
-//                    console.log('keypress:',event); 
-                  } ,
     'keydown' : function (event) { 
-                    if (event.keyIdentifier == "Up" && event.shiftKey==true) { LoadPriorQuery(); return false; }  
+                    if (event.keyIdentifier == "Enter" && event.metaKey==true) { SubmitActiveQuery(); return false; } 
+                    if (event.keyIdentifier == "Up" && event.metaKey==true) { SetActiveQuery("","up"); return false; }  
+                    if (event.keyIdentifier == "Down" && event.metaKey==true) { SetActiveQuery("","down"); return false; }  
+                    if (event.keyCode == 27) { SetActiveQuery(""); return false; }  // ESC
 //                    console.log('keydown:',event); 
+//                    console.log('consolepos', window.editor.getCursor());
                   } ,
 //    'keydown' : function (event) { console.log('keydown:',event); } ,
 //    'keypress': function (event) { console.log('keypress:',event); } ,
@@ -121,6 +131,7 @@ if (Meteor.isClient) {
 
   Meteor.startup(function() {
     Session.setDefault("histlimit", 3);
+    Session.setDefault("histpos", 0);
 	  var mime = 'text/x-mysql';
 	  // get mime type
 	  if (window.location.href.indexOf('mime=') > -1) {
@@ -135,6 +146,13 @@ if (Meteor.isClient) {
         autofocus: true, 
         extraKeys: {"Enter": false }
       });
+  /*
+    window.editor.on('beforeSelectionChange',function(a,sel) { 
+      console.log('beforeSelectionChange',sel.anchor);
+      if (sel.anchor.hitSide && sel.anchor.outside)
+        console.log("load!!", sel.anchor.xRel);
+    });
+  */
 });
 
 }
@@ -165,7 +183,7 @@ Meteor.methods({
       });
       var fiber = Fiber.current;
 
-      var options = { sql: query, nestTables: true };
+      var options = { sql: query, nestTables: '.' };
       connection.query(options, function(err, tables) {
           if (err) {
             // treat errors as regular objects.

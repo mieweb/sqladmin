@@ -70,7 +70,7 @@ if (Meteor.isClient) {
     // console.log("SaveActiveQuery(",q.trim().length,"):",q);
     if (q.trim().length) {
       lastq = SQLCmds.findOne({ user: username }, {sort: { time: -1 }});
-      console.log("Last Cmd:",lastq);
+      //console.log("Last Cmd:",lastq);
       if (lastq.query.trim() !== q.trim()) {
         SQLCmds.insert( { query: q, user: username, time: Date.now() } );
         Session.set("histpos", 0);
@@ -119,7 +119,7 @@ if (Meteor.isClient) {
                     if (event.keyIdentifier == "Enter" && event.metaKey==true) { SubmitActiveQuery(); return false; } 
                     if (event.keyIdentifier == "Up" && event.metaKey==true) { SetActiveQuery("","up"); return false; }  
                     if (event.keyIdentifier == "Down" && event.metaKey==true) { SetActiveQuery("","down"); return false; }  
-                    if (event.keyCode == 27) { SetActiveQuery(""); return false; }  // ESC
+                    if (event.keyCode == 27) { SetActiveQuery(""); Session.set("histpos", -1); return false; }  // ESC
 //                    console.log('keydown:',event); 
 //                    console.log('consolepos', window.editor.getCursor());
                   } ,

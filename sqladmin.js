@@ -11,19 +11,12 @@ if (Meteor.isClient) {
 
   Meteor.subscribe("sqlcmds",LoadHist);
 
-  var DateFormats = {
-         short: "DD MMMM - YYYY",
-         long: "dddd DD.MM.YYYY HH:mm"
-  };
-
-  Handlebars.registerHelper("formatDate", function(datetime, format) {
-    if (moment) {
-      f = DateFormats[format];
-      return moment(datetime).format(f);
-    }
-    else {
-      return datetime;
-    }
+  //Using moment.fromNow which is cool, but needs some thinking for reactive display since, now is always moving.
+  //would like dates to show fromNow and intelligently update.
+  Handlebars.registerHelper("formatDate", function(datetime) {
+    return new Handlebars.SafeString( 
+        "<span class='datetime' title='" + moment(datetime).format('lll') + "'>" + moment(datetime).fromNow() + "</span>" 
+      );
   });
 
   Template.sqlhistory.sqlcmds = function () {

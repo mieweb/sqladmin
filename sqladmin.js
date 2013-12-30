@@ -19,10 +19,59 @@ if (Meteor.isClient) {
       );
   });
 
+  Handlebars.registerHelper('debug', function (message) {
+    console.log("debug-%s: this (%O), args(%d):%O",message, this,arguments.length,arguments);
+  });
+
+  Handlebars.registerHelper('dumpheader', function (context) {
+    if (typeof context == 'undefined')
+      return;
+    // move to the first node.
+    context = context[0];
+    if (typeof context == 'undefined')
+      return;
+
+    var p="<tr>";
+    for (var prop in context) {
+      if(context.hasOwnProperty(prop)){
+        p += "<td>"+Handlebars._escape(prop)+"</td>";
+      }
+    }
+    p += "</tr>";
+    return new Handlebars.SafeString(p);
+  });
+
+  Handlebars.registerHelper('dumprow', function () {
+    var context  = this;
+    var p="<tr>";
+    for (var prop in context) {
+      if(context.hasOwnProperty(prop)){
+        switch (typeof context[prop]) {
+          case 'string':
+            p += "<td>"+Handlebars._escape(context[prop])+"</td>";
+            break;
+          case 'number':
+          case 'boolean':
+          case null:
+          case 'object':
+          default:
+            p += "<td>"+context[prop]+"</td>";
+        }
+      }
+    }
+    p += "</tr>"
+    return new Handlebars.SafeString(p);
+  });
+
   Template.sqlhistory.sqlcmds = function () {
     var t=SQLCmds.find({ user: username }, {sort: { time: -1 }, limit: Session.get("histlimit")}).fetch().reverse();
 //    console.log("t:", t);
     return t;
+  };
+
+  Template.sqlresultview.activeres = function () {
+    var res = Session.get("activeres");
+    return res;
   };
 
   var SetActiveQuery = function(query, num) {
@@ -78,10 +127,7 @@ if (Meteor.isClient) {
 //    console.log("SubmitActiveQuery(",q.trim().length,"):",q);
     if (q.trim().length) {
       SaveActiveQuery();
-      res = Meteor.call('DBExec', q, function(err,res) { 
-        window.lastres = res;
-        console.log("lastres:",res, "Err:", err)}
-      );
+      res = Meteor.call('DBExec', q, '_', function(err,res) { Session.set("activeres",res); } );
 //      console.log("Client:",res);
     }
   };
@@ -119,6 +165,7 @@ if (Meteor.isClient) {
 //    'keydown' : function (event) { console.log('keydown:',event); } ,
 //    'keypress': function (event) { console.log('keypress:',event); } ,
 //    'keyup'   : function (event) { console.log('keyup:',event); } ,
+//    'click'   : function (event) { console.log('click:',event, "this:", this); } ,
     '':''
   });
 
@@ -165,8 +212,8 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  DBExec: function (query) {
-    console.log("DBExec: ", query);
+  DBExec: function (query, nest) {
+//    console.log("DBExec: ", query);  
     if (Meteor.isServer) {
       var connection = Mysql.createConnection({
         host     : 'localhost',
@@ -176,15 +223,17 @@ Meteor.methods({
       });
       var fiber = Fiber.current;
 
-      var options = { sql: query, nestTables: '.' };
+      if (typeof nest == 'undefined') next = false;
+      var options = { sql: query, nestTables: nest };
       connection.query(options, function(err, tables) {
           if (err) {
-            // treat errors as regular objects.
-            tables = new Object();
-            tables.name = err.name;
-            tables.message = err.message;
+            // treat errors as regular results.
+            tables = new Array();
+            tables[0] = new Object();
+            tables[0]['name'] = err.name;
+            tables[0]['message'] = err.message;
             for (var e in err) {
-              tables[e] = err[e];
+              tables[0][e] = err[e];
             }
           } 
 

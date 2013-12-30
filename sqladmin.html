@@ -31,7 +31,6 @@
   {{> sqlhistory}}
 
   <article>
-  <h2>SQL Mode for CodeMirror</h2>
   <form> <textarea id="code" name="code"></textarea> </form>
 <!--              <p><strong>MIME types defined:</strong> 
               <code><a href="?mime=text/x-sql">text/x-sql</a></code>,
@@ -42,6 +41,8 @@
               <code><a href="?mime=text/x-mssql">text/x-mssql</a></code>.
           </p>-->
   </article>
+  <br>
+  {{> sqlresultview}}
 </template>
 
 <template name="sqlhistory">
@@ -77,3 +78,23 @@
   </tr>
 </template>
 
+
+<template name="sqlresultview">
+  <div class="sqlresult">
+  <table>
+    <thead>
+      {{dumpheader activeres}}
+    </thead>
+    <tbody>
+    </tbody>
+      {{#each activeres}}
+        {{> sqlrow}}
+      {{/each}}
+  </table>
+  </div>
+</template>
+
+
+<template name="sqlrow">
+{{dumprow}}
+</template>

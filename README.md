@@ -1,11 +1,11 @@
 sqladmin
 ========
-
 SQL Query Tool
 
 sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting. The goal of this tool is to replace the mysql CLI... but on serioids. 
 
-Features:
+Features
+--------
 * Syntax highlighting of SQL
 * Shared history (even realtime between multiple browser windows, thanks to meteor)
 * readline-like shortcuts
@@ -15,9 +15,26 @@ Features:
     * Enter - submit the query.
 * Ability to save and share results.
 
+Screenshot
+----------
 ![Screenshot](/img/screenshot.png "Sample Screenshot")
 
+Install
+-------
+* Install meteor: 
+    
+        curl https://install.meteor.com | /bin/sh
+    
+* Download: 
+
+        git clone https://github.com/mieweb/sqladmin.git
+
+* Run:
+
+        cd sqladmin; meteor
+
 TODO:
+-----
 * Allow modification of connection parameters from the front end.
   * server side limitations to allow for network security. 
 * Display
@@ -40,6 +57,7 @@ TODO:
   * Better detection when meteor goes
  
 TODO improve display:
+---------------------
 * pagenate / infinate scroll
   * Infinate scroll assumes result set does not change server side (ie: someone does an insert while scrolling)
 * format column headers based on a Model Map

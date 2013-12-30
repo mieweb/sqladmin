@@ -29,6 +29,8 @@ Install
 
         git clone https://github.com/mieweb/sqladmin.git
         cd sqladmin
+        mrt add moment
+        mrt add npm
 
 * Configure:
 
@@ -37,6 +39,12 @@ Install
 * Run:
 
         meteor
+
+* browse to the address displayed, and then type in:
+
+        show tables
+
+ * then press Alt (or Cmd) Enter)
 
 TODO:
 -----

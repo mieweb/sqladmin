@@ -28,10 +28,15 @@ Install
 * Download: 
 
         git clone https://github.com/mieweb/sqladmin.git
+        cd sqladmin
+
+* Configure:
+
+        vi private/connection.json
 
 * Run:
 
-        cd sqladmin; meteor
+        meteor
 
 TODO:
 -----

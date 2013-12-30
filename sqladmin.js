@@ -197,14 +197,30 @@ if (Meteor.isClient) {
 
 }
 
-var Fiber;
-var Mysql;
-
 if (Meteor.isServer) {
+  var Fiber;
+  var Mysql;
+  var Cparam;
+
   Meteor.startup(function () {
     // code to run on server at startup
     Fiber      = Npm.require('fibers');
     Mysql      = Npm.require('mysql');
+    var cfile  = 'connection.json';
+    try {
+      var s = Assets.getText(cfile);
+      Cparam = JSON.parse(s);
+    } catch (e) {
+      console.log("parse error: %s, in file: private/%s (%s)",e,cfile,s);
+      var example = {
+        host     : 'localhost',
+        user     : 'root',
+        password : '',
+        database : ''
+      };
+      console.log("Make sure a file exists in private/%s.\nExample contents: %s", cfile, JSON.stringify(example));
+    }
+//    console.log("Connecting to DB using:",Cparam);
   });
 
   Meteor.publish("sqlcmds", function () { return SQLCmds.find({}) } );
@@ -215,12 +231,19 @@ Meteor.methods({
   DBExec: function (query, nest) {
 //    console.log("DBExec: ", query);  
     if (Meteor.isServer) {
-      var connection = Mysql.createConnection({
-        host     : 'localhost',
-        user     : 'root',
-        password : '',
-        database : 'wc'
-      });
+      try {
+        var connection = Mysql.createConnection(Cparam);
+      } catch (e) {
+        console.log("in DBExec, createConnection error:",e);
+        // treat errors as regular results.
+        var err = new Array();
+        err[0] = new Object();
+        err[0]['context'] = 'in DBExec, createConnection';
+        err[0]['name'] = e.name;
+        err[0]['message'] = e.message;
+        err[0]['stack'] = e.stack;
+        return err;
+      }
       var fiber = Fiber.current;
 
       if (typeof nest == 'undefined') next = false;

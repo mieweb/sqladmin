@@ -116,9 +116,9 @@ if (Meteor.isClient) {
                 if (this) SetActiveQuery(this.query);
               } ,
     'keydown' : function (event) { 
-                    if (event.keyIdentifier == "Enter" && event.metaKey==true) { SubmitActiveQuery(); return false; } 
-                    if (event.keyIdentifier == "Up" && event.metaKey==true) { SetActiveQuery("","up"); return false; }  
-                    if (event.keyIdentifier == "Down" && event.metaKey==true) { SetActiveQuery("","down"); return false; }  
+                    if (event.keyIdentifier == "Enter" && (event.metaKey==true||event.altKey==true)) { SubmitActiveQuery(); return false; } 
+                    if (event.keyIdentifier == "Up" && (event.metaKey==true||event.altKey==true)) { SetActiveQuery("","up"); return false; }  
+                    if (event.keyIdentifier == "Down" && (event.metaKey==true||event.altKey==true)) { SetActiveQuery("","down"); return false; }  
                     if (event.keyCode == 27) { SetActiveQuery(""); Session.set("histpos", -1); return false; }  // ESC
 //                    console.log('keydown:',event); 
 //                    console.log('consolepos', window.editor.getCursor());

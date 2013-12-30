@@ -28,9 +28,10 @@ TODO:
 
 TODO improve display:
 * pagenate / infinate scroll
+  * Infinate scroll assumes result set does not change server side (ie: someone does an insert while scrolling)
 * format column headers based on a Model Map
 * format cells based on data type (ie: dates, numbers, strings)
 * if all rows are retreived, support sorting, filtering, group by on browser
   * The plan is to force a limit, if that limit is not hit, then we know we have the full result set.
-  * if not, then
+  * if not, then don't... but also if it is a simple query, WHERE, ORDER BY and LIMIT could be used server side. 
 * Make results graph with d3.

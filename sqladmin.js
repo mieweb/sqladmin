@@ -23,6 +23,36 @@ if (Meteor.isClient) {
     console.log("debug-%s: this (%O), args(%d):%O",message, this,arguments.length,arguments);
   });
 
+  Handlebars.registerHelper('ifArray', function (context, options) {
+    if (typeof context == 'undefined')
+      return options.inverse(this);
+    if (Array.isArray(context))
+      return options.fn(this);;
+    return options.inverse(this);
+  });
+
+  Handlebars.registerHelper('ifmultires', function (context, options) {
+    if (typeof context == 'undefined')
+      return options.fn(this);
+    for (var prop in context) {
+      if(context.hasOwnProperty(prop)){
+        switch (typeof context[prop]) {
+          case 'object':
+            if (Array.isArray(context[prop]))
+              return options.fn(this);;
+            break;
+          case 'string':
+          case 'number':
+          case 'boolean':
+          case null:
+          default:
+            return options.fn(this);;
+        }
+      }
+    }
+    return options.inverse(this); //  If I got here then they are all objects and not arrays.
+  });
+
   Handlebars.registerHelper('dumpheader', function (context) {
     if (typeof context == 'undefined')
       return;
@@ -127,7 +157,16 @@ if (Meteor.isClient) {
 //    console.log("SubmitActiveQuery(",q.trim().length,"):",q);
     if (q.trim().length) {
       SaveActiveQuery();
-      res = Meteor.call('DBExec', q, '_', function(err,res) { Session.set("activeres",res); } );
+      res = Meteor.call('DBExec', q, '_', function(err,res) { 
+          if (Array.isArray(res))
+            Session.set("activeres",res); 
+          else {
+            var t = new Array();
+            t.push(res);
+            Session.set("activeres",t);
+          }
+        } 
+      );
 //      console.log("Client:",res);
     }
   };

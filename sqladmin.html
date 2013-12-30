@@ -81,19 +81,42 @@
 
 <template name="sqlresultview">
   <div class="sqlresult">
-  <table>
-    <thead>
-      {{dumpheader activeres}}
-    </thead>
-    <tbody>
-    </tbody>
+    {{#ifmultires activeres}}
       {{#each activeres}}
-        {{> sqlrow}}
+        {{> sqlresultview_multi}}
       {{/each}}
-  </table>
+    {{else}}
+      <table>
+        <thead>
+          {{dumpheader activeres}}
+        </thead>
+        <tbody>
+        </tbody>
+          {{#each activeres}}
+            {{> sqlrow}}
+          {{/each}}
+      </table>
+    {{/ifmultires}}
   </div>
 </template>
 
+<template name="sqlresultview_multi">
+  <table>
+    <thead>
+      {{dumpheader this}}
+    </thead>
+    <tbody>
+    </tbody>
+      {{#ifArray this}}
+        {{#each this}}
+          {{> sqlrow}}
+        {{/each}}
+      {{else}}
+        {{dumprow}}
+      {{/ifArray}}
+  </table>
+  <br>
+</template>
 
 <template name="sqlrow">
 {{dumprow}}

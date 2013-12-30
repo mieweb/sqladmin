@@ -2,5 +2,6 @@
    "host"     : "localhost",
    "user"     : "root",
    "password" : "",
-   "database" : "wc"
+   "database" : "wc",
+   "multipleStatements": true
 }

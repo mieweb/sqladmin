@@ -9,6 +9,10 @@ Features:
 * Syntax highlighting of SQL
 * Shared history (even realtime between multiple browser windows, thanks to meteor)
 * readline-like shortcuts
+  * Hold Alt (mac: Cmd) and:
+    * Up - previous entry in the history.
+    * Down - next entry in the history.
+    * Enter - submit the query.
 * Ability to save and share results.
 
 ![Screenshot](/img/screenshot.png "Sample Screenshot")

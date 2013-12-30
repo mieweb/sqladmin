@@ -113,7 +113,7 @@ if (Meteor.isClient) {
     if (q.trim().length) {
       lastq = SQLCmds.findOne({ user: username }, {sort: { time: -1 }});
       //console.log("Last Cmd:",lastq);
-      if (lastq.query.trim() !== q.trim()) {
+      if ((!lastq)||(lastq.query.trim() !== q.trim())) {
         SQLCmds.insert( { query: q, user: username, time: Date.now() } );
         Session.set("histpos", 0);
       }

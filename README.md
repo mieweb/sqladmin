@@ -3,8 +3,15 @@ sqladmin
 
 SQL Query Tool
 
-The goal of this tool is to be a replacement to the mysql CLI but on serioids. 
+The goal of this tool is to be a replacement to the mysql CLI but on serioids. sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting.
 
+Features:
+* Syntax highlighting of SQL
+* Shared history (realtime between browser windows, thanks to meteor)
+* readline-like shortcuts
+* Ability to save and share results.
+
+![Screenshot](/img/screenshot.jpg "Sample Screenshot")
 
 TODO:
 * Connection parameters should modifiable by front end.
@@ -25,7 +32,9 @@ TODO:
 * Forgien Key Intellgence
   * FK relationships should be browseable from the result table.
   * FK rels should allow for auto-complete on updates.  Model map will help here.
-
+* Stability
+  * Better detection when meteor goes
+ 
 TODO improve display:
 * pagenate / infinate scroll
   * Infinate scroll assumes result set does not change server side (ie: someone does an insert while scrolling)

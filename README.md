@@ -3,18 +3,18 @@ sqladmin
 
 SQL Query Tool
 
-The goal of this tool is to be a replacement to the mysql CLI but on serioids. sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting.
+sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting. The goal of this tool is to replace the mysql CLI... but on serioids. 
 
 Features:
 * Syntax highlighting of SQL
-* Shared history (realtime between browser windows, thanks to meteor)
+* Shared history (even realtime between multiple browser windows, thanks to meteor)
 * readline-like shortcuts
 * Ability to save and share results.
 
-![Screenshot](/img/screenshot.jpg "Sample Screenshot")
+![Screenshot](/img/screenshot.png "Sample Screenshot")
 
 TODO:
-* Connection parameters should modifiable by front end.
+* Allow modification of connection parameters from the front end.
   * server side limitations to allow for network security. 
 * Display
   * improve the display of results in tabular form (see below).

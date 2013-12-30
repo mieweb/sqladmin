@@ -2,7 +2,7 @@ sqladmin
 ========
 SQL Query Tool
 
-sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting. The goal of this tool is to replace the mysql CLI... but on serioids. 
+sqladmin is a simple SQL shell (with GNU readline capabilities) and syntax highlighting. The goal of this tool is to replace the mysql CLI... but on steroids. 
 
 Features
 --------
@@ -55,19 +55,19 @@ TODO:
   * Built from the INFORMATION_SCHEMA, but indexed for quick look up. (similar to -A on the CLI)
   * Allows labeling of headings.
   * Makes auto-complete possible.
-* Forgien Key Intellgence
-  * FK relationships should be browseable from the result table.
+* Foreign Key Intelligence
+  * FK relationships should be browse-able from the result table.
   * FK rels should allow for auto-complete on updates.  Model map will help here.
 * Stability
   * Better detection when meteor goes
  
 TODO improve display:
 ---------------------
-* pagenate / infinate scroll
-  * Infinate scroll assumes result set does not change server side (ie: someone does an insert while scrolling)
+* paginate / infinite scroll
+  * Infinite scroll assumes result set does not change server side (i.e.: someone does an insert while scrolling)
 * format column headers based on a Model Map
-* format cells based on data type (ie: dates, numbers, strings)
-* if all rows are retreived, support sorting, filtering, group by on browser
+* format cells based on data type (i.e.: dates, numbers, strings)
+* if all rows are retrieved, support sorting, filtering, group by on browser
   * The plan is to force a limit, if that limit is not hit, then we know we have the full result set.
   * if not, then don't... but also if it is a simple query, WHERE, ORDER BY and LIMIT could be used server side. 
 * Make results graph with d3.

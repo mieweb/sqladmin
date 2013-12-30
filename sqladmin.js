@@ -64,7 +64,14 @@ if (Meteor.isClient) {
     var p="<tr>";
     for (var prop in context) {
       if(context.hasOwnProperty(prop)){
-        p += "<td>"+Handlebars._escape(prop)+"</td>";
+        var s = prop.split('|')
+        if (s.length==2) {
+          if (s[0].length==0)
+            p += "<td>"+Handlebars._escape(s[1])+"</td>";
+          else
+            p += "<td>"+Handlebars._escape(s[0])+"."+Handlebars._escape(s[1])+"</td>";
+        } else
+          p += "<td>"+Handlebars._escape(prop)+"</td>";
       }
     }
     p += "</tr>";
@@ -103,6 +110,10 @@ if (Meteor.isClient) {
     var res = Session.get("activeres");
     return res;
   };
+  
+  Template.sqlresultview.events({
+    'click'   : function (event) { alert('click:' + event.toElement.localName + "\nthis:" + JSON.stringify(this)); }
+  });
 
   var SetActiveQuery = function(query, num) {
     //console.log("SetActiveQuery:", query, "num:", num);
@@ -157,7 +168,7 @@ if (Meteor.isClient) {
 //    console.log("SubmitActiveQuery(",q.trim().length,"):",q);
     if (q.trim().length) {
       SaveActiveQuery();
-      res = Meteor.call('DBExec', q, '_', function(err,res) { 
+      res = Meteor.call('DBExec', q, '|', function(err,res) { 
           if (Array.isArray(res))
             Session.set("activeres",res); 
           else {

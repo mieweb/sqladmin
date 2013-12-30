@@ -46,6 +46,10 @@ Install
 
  * then press Alt (or Cmd) Enter)
 
+Prerequisites
+-------------
+A MySQL server is required to be reachable from the machine you are hosting the meteor server.  For testing on Mac, I recommend MariaDB (https://mariadb.com/kb/en/building-mariadb-on-mac-os-x-using-homebrew/) or MySQL community server (http://dev.mysql.com/downloads/mysql/).
+
 TODO:
 -----
 * Allow modification of connection parameters from the front end.

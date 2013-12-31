@@ -29,8 +29,6 @@ Install
 
         git clone https://github.com/mieweb/sqladmin.git
         cd sqladmin
-        mrt add moment
-        mrt add npm
 
 * Configure:
 

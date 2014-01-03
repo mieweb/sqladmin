@@ -3,7 +3,8 @@
   "dependencies": {
     "basePackages": {
       "moment": {},
-      "npm": {}
+      "npm": {},
+      "codemirror": {}
     },
     "packages": {
       "moment": {
@@ -15,6 +16,10 @@
         "git": "https://github.com/arunoda/meteor-npm.git",
         "tag": "v0.2.6",
         "commit": "177ab6118de5bf8cffb19481343d5762ff7a2aaf"
+      },
+      "codemirror": {
+        "git": "https://github.com/horner/meteor-codemirror.git",
+        "tag": "v0.0.3"
       }
     }
   }

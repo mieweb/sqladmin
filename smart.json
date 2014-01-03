@@ -1,6 +1,7 @@
 {
   "packages": {
     "moment": {},
-    "npm": {}
+    "npm": {},
+    "codemirror": {}
   }
 }

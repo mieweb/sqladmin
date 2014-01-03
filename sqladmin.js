@@ -254,8 +254,8 @@ if (Meteor.isServer) {
 
   Meteor.startup(function () {
     // code to run on server at startup
-    Fiber      = Npm.require('fibers');
-    Mysql      = Npm.require('mysql');
+    Fiber      = Meteor.require('fibers');
+    Mysql      = Meteor.require('mysql');
     var cfile  = 'connection.json';
     try {
       var s = Assets.getText(cfile);

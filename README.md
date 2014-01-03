@@ -21,14 +21,14 @@ Screenshot
 
 Install
 -------
-* Install meteor: 
-    
-        curl https://install.meteor.com | /bin/sh
-    
+ 
 * Download: 
 
         git clone https://github.com/mieweb/sqladmin.git
         cd sqladmin
+        ./setup.sh
+
+setup.sh will download meteorite if it's not already, and then download the packages needed.
 
 * Configure:
 

@@ -101,7 +101,7 @@ if (Meteor.isClient) {
   });
 
   Template.sqlhistory.sqlcmds = function () {
-    var t=SQLCmds.find({ user: username }, {sort: { time: -1 }, limit: Session.get("histlimit")}).fetch().reverse();
+    var t=SQLCmds.find({ user: username }, {sort: { time: 1 }, limit: Session.get("histlimit")}).fetch();
 //    console.log("t:", t);
     return t;
   };

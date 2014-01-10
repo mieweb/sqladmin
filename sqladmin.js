@@ -286,8 +286,7 @@ Meteor.methods({
       } catch (e) {
         console.log("in DBExec, createConnection error:",e);
         // treat errors as regular results.
-        var err = new Array();
-        err[0] = new Object();
+        var err = [ {} ];
         err[0]['context'] = 'in DBExec, createConnection';
         err[0]['name'] = e.name;
         err[0]['message'] = e.message;
@@ -301,8 +300,7 @@ Meteor.methods({
       connection.query(options, function(err, tables) {
           if (err) {
             // treat errors as regular results.
-            tables = new Array();
-            tables[0] = new Object();
+            tables = [ { } ];
             tables[0]['name'] = err.name;
             tables[0]['message'] = err.message;
             for (var e in err) {

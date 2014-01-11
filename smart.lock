@@ -4,7 +4,10 @@
     "basePackages": {
       "moment": {},
       "npm": {},
-      "codemirror": {}
+      "codemirror": {
+        "git": "https://github.com/horner/meteor-codemirror.git",
+        "tag": "v0.0.3"
+      }
     },
     "packages": {
       "moment": {
@@ -19,7 +22,8 @@
       },
       "codemirror": {
         "git": "https://github.com/horner/meteor-codemirror.git",
-        "tag": "v0.0.3"
+        "tag": "v0.0.3",
+        "commit": "ded8bd8f3c816b7a547370fd4ce4cce67048b342"
       }
     }
   }

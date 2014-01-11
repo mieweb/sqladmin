@@ -2,6 +2,9 @@
   "packages": {
     "moment": {},
     "npm": {},
-    "codemirror": {}
+    "codemirror": {
+      "git": "https://github.com/horner/meteor-codemirror.git",
+      "tag": "v0.0.3"
+    }
   }
 }

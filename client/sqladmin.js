@@ -1,6 +1,5 @@
-let username = 'horner';
-
 let histpos = 0;
+const moment = require('moment');
 
 let LoadHist = function () {
   SetActiveQuery('', 0);
@@ -12,7 +11,7 @@ Meteor.subscribe('sqlcmds', LoadHist);
 // would like dates to show fromNow and intelligently update.
 Handlebars.registerHelper('formatDate', function (datetime) {
   return new Handlebars.SafeString(
-    '<span class="datetime" title="' + moment(datetime).format('lll') + '">" + moment(datetime).fromNow() + "</span>'
+    '<span class="datetime" title="' + moment(datetime).format('lll') + '">' + moment(datetime).fromNow() + '</span>'
   );
 });
 
@@ -100,10 +99,13 @@ Handlebars.registerHelper('dumprow', function () {
 Template.sqlresultview.helpers({
   activeres: function () {
     return Session.get('activeres');
-  },
+  }
+});
+
+Template.sqlhistory.helpers({
   sqlcmds: function () {
     return SQLCmds.find({
-      user: username
+      user: $('#connection_username').val()
     }, {
       sort: {
         time: -1
@@ -112,6 +114,7 @@ Template.sqlresultview.helpers({
     }).fetch().reverse();
   }
 });
+
 Template.sqlresultview.events({
   'click'(event) {
     alert('click:' + event.toElement.localName + '\nthis:' + JSON.stringify(this));
@@ -119,7 +122,7 @@ Template.sqlresultview.events({
 });
 
 const SetActiveQuery = function (query, num) {
-  // console.log("SetActiveQuery:", query, "num:", num);
+  console.log('SetActiveQuery:', query, 'num:', num);
   if (!window.editor) {
     console.log('FIXME!!! Wait for the window.editor window to appear.');
     console.log('It fired before window was created!!!!');
@@ -143,7 +146,7 @@ const SetActiveQuery = function (query, num) {
     }
     // console.log('SetActiveQuery:', query, 'num:', num);
     lastq = SQLCmds.findOne({
-      user: username
+      user: $('#connection_username').val().trim()
     }, {
       sort: {
         time: -1
@@ -160,10 +163,10 @@ const SetActiveQuery = function (query, num) {
 
 const SaveActiveQuery = function () {
   const q = window.editor.getValue();
-  // console.log('SaveActiveQuery(',q.trim().length,'):',q);
+  console.log('SaveActiveQuery(', q.trim().length, '):', q);
   if (q.trim().length) {
     lastq = SQLCmds.findOne({
-      user: username
+      user: $('#connection_username').val().trim()
     }, {
       sort: {
         time: -1
@@ -173,7 +176,7 @@ const SaveActiveQuery = function () {
     if ((!lastq) || (lastq.query.trim() !== q.trim())) {
       SQLCmds.insert({
         query: q,
-        user: username,
+        user: $('#connection_username').val().trim(),
         time: Date.now()
       });
       Session.set('histpos', 0);
@@ -190,17 +193,17 @@ const SubmitActiveQuery = function () {
     SaveActiveQuery();
     const exec = {
       'q': q,
-      'host': $("#connection_host").val().trim(),
-      'password': $("#connection_password").val().trim(),
-      'username': $("#connection_username").val().trim(),
-      'port': $("#connection_port").val().trim(),
-      'database': $("#connection_database").val().trim(),
-      'multiStatements': $("#connection_multiStatement").val(),
+      'host': $('#connection_host').val().trim(),
+      'username': $('#connection_username').val().trim(),
+      'password': $('#connection_password').val().trim(),
+      'port': $('#connection_port').val().trim(),
+      'database': $('#connection_database').val().trim(),
+      'multiStatements': $('#connection_multiStatement').val(),
     }
     res = Meteor.call('DBExec', exec, '|', function (err, res) {
       if (err) {
         console.log(err);
-        toastr.error(err.message, "DBExec Error");
+        toastr.error(err.message, 'DBExec Error');
         return;
       }
       if (Array.isArray(res))
@@ -240,9 +243,9 @@ Template.sqladmin.events({
   'click input#less': function (event) {
     AddHistory(-5);
   },
-  // 'click input' : function (event) { console.log( "click input:",event, this); },
+  // 'click input' : function (event) { console.log( 'click input:',event, this); },
   'click .csqlcmd': function (event) {
-    // console.log('click:',event, "this:", this); 
+    // console.log('click:',event, 'this:', this); 
     if (this) SetActiveQuery(this.query);
   },
   'keydown': function (event) {
@@ -269,7 +272,7 @@ Template.sqladmin.events({
   //    'keydown' : function (event) { console.log('keydown:',event); } ,
   //    'keypress': function (event) { console.log('keypress:',event); } ,
   //    'keyup'   : function (event) { console.log('keyup:',event); } ,
-  //    'click'   : function (event) { console.log('click:',event, "this:", this); } ,
+  //    'click'   : function (event) { console.log('click:',event, 'this:', this); } ,
   '': ''
 });
 
@@ -297,7 +300,7 @@ Template.sqladmin.onRendered(function () {
     window.editor.on('beforeSelectionChange',function(a,sel) { 
       console.log('beforeSelectionChange',sel.anchor);
       if (sel.anchor.hitSide && sel.anchor.outside)
-        console.log("load!!", sel.anchor.xRel);
+        console.log('load!!', sel.anchor.xRel);
     });
   */
   StickyEditor();

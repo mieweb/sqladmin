@@ -1,0 +1,140 @@
+<head>
+  <title>SQL Editor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/codemirror.min.js" integrity="sha256-cEZZfu/xNhXjnj1TRr9CrIGoAZ2hztIzwNTUv0Zcll8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/addon/edit/matchbrackets.min.js" integrity="sha256-IS0Qq00AjQZ0vBAOSgX5nCM2upv99uA+vt7zUmEw01w=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/codemirror.min.css" integrity="sha256-I8NyGs4wjbMuBSUE40o55W6k6P7tu/7G28/JGUUYCIs=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/mode/sql/sql.min.js" integrity="sha256-1ydycJneQQU4I8JeWUForl3/EKEYUZdgqBL8BCQU7Q8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/addon/hint/sql-hint.min.js" integrity="sha256-8F0CSlcTcxjP4/e6t1VIKSn3jObow5YsQ79VsP4kxvk=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/addon/hint/show-hint.min.js" integrity="sha256-ZBm9AFhJ0c5lDm8t8etXJTCxHXzLWzpXHwlJpTm2FkU=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.42.0/addon/hint/show-hint.min.css" integrity="sha256-Ng5EdzHS/CC37tR7tE75e4Th9+fBvOB4eYITOkXS22Q=" crossorigin="anonymous" />
+</head>
+
+<body>
+  <style>
+    .CodeMirror {
+    border: 1px solid #dbdbdb;
+    height: auto; 
+    overflow-x: auto; 
+    overflow-y: hidden;
+}
+</style>
+
+  {{> sqladmin}}
+
+</body>
+
+<template name="sqladmin">
+  <div class="wrapper">
+    <p>
+      <input id="exec" type="button" class="btn btn-primary" value="Execute" alt="Cmd/Alt-Enter" /> (Cmd/Alt-Enter)
+      <input id="save" type="button" class="btn btn-primary" value="Save" />
+      <input id="more" type="button" class="btn btn-primary" value="+" />
+      <input id="less" type="button" class="btn btn-primary" value="-" />
+    </p>
+    <p>
+      <input id="connection_host" value="localhost" class="input-sm form-control" placeholder="Hostname" />
+      <input id="connection_database" value="" class="input-sm form-control" placeholder="Database" />
+      <input id="connection_username" value="root" class="input-sm form-control" placeholder="Username" />
+      <input id="connection_password" value="" class="input-sm form-control" placeholder="Password" />
+      <input id="connection_port" value="3306" class="input-sm form-control" placeholder="Port" />
+      <input type="checkbox" id="connection_multiStatement" value="1"> Multi-Statements<br>
+    </p>
+    {{> sqlhistory}}
+
+    <article>
+      <form> <textarea id="code" name="code"></textarea> </form>
+      <!--
+      <p><strong>MIME types defined:</strong> 
+      <code><a href="?mime=text/x-sql">text/x-sql</a></code>,
+      <code><a href="?mime=text/x-mysql">text/x-mysql</a></code>,
+      <code><a href="?mime=text/x-mariadb">text/x-mariadb</a></code>,
+      <code><a href="?mime=text/x-cassandra">text/x-cassandra</a></code>,
+      <code><a href="?mime=text/x-plsql">text/x-plsql</a></code>,
+      <code><a href="?mime=text/x-mssql">text/x-mssql</a></code>.
+      </p>
+    -->
+    </article>
+    <br />
+    {{> sqlresultview}}
+  </div>
+</template>
+
+<template name="sqlhistory">
+  <div class="sqlhistory">
+    <div class="outer">
+      <div class="sticky">
+        <div class="inner">
+          <table>
+            <thead>
+              <tr>
+                <td>Query</td>
+                <td>Date/Time</td>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td colspan="4"><a href="#">prev</a> 1-20 of 100 <a href="#">next</a></td>
+              </tr>
+            </tfoot>
+            <tbody>
+              {{#each sqlcmds}}
+                {{> sqlcmd}}
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="sqlcmd">
+  <tr class="csqlcmd">
+    <td>{{query}}</td>
+    <td>{{formatDate time}}</td>
+  </tr>
+</template>
+
+
+<template name="sqlresultview">
+  <div class="sqlresult">
+    {{#if multires activeres}}
+      {{#each activeres}}
+        {{> sqlresultview_multi}}
+      {{/each}}
+    {{else}}
+    <table>
+      <thead>
+        {{dumpheader activeres}}
+      </thead>
+      <tbody>
+      </tbody>
+      {{#each activeres}}
+       {{> sqlrow}}
+      {{/each}}
+    </table>
+    {{/if}}
+  </div>
+</template>
+
+<template name="sqlresultview_multi">
+  <table>
+    <thead>
+      {{dumpheader this}}
+    </thead>
+    <tbody>
+    </tbody>
+    {{#if Array this}}
+      {{#each this}}
+        {{> sqlrow}}
+     {{/each}}
+    {{else}}
+     {{dumprow}}
+    {{/if}}
+  </table>
+  <br>
+</template>
+
+<template name="sqlrow">
+  {{dumprow}}
+</template>
